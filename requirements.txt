@@ -1,0 +1,5 @@
+Flask==1.1.2
+youtube-search==2.1.0
+youtube-search-python==1.6.1
+requests==2.27.1
+json5==0.9.6
