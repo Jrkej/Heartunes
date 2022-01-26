@@ -11,21 +11,24 @@ var players = {};
 var loadings = 0;
 var vids = 0;
 var IDs = [];
-var change = 5;
+var change = 0;
 var pre = 0;
 
 function onYouTubeIframeAPIReady() {
-    IDs = [];
     console.log("Loading songs");
     var loaders = document.getElementsByClassName("song");
     var size = '0';
+    change = YT.PlayerState.CUED;
+
     if (document.location.href.includes("preload=1")) {
         pre = 1;
-        change = 1;
+        change = YT.PlayerState.PLAYING;
     }
+
     if (document.location.href.includes("debug=1")) {
         size = '100';
     }
+
     for (var i = 0; i < loaders.length; i++) {
         var videoId = loaders.item(i).id.replace("youtube-audio", "");
         IDs.push(videoId);
@@ -44,7 +47,7 @@ function onYouTubeIframeAPIReady() {
         });
         players[videoId] = player;
     }
-    console.log("Loading players", IDs.length, players.length, loaders.length);
+    console.log("Loading players", IDs.length);
 }
 
 function ready(e) {
@@ -60,9 +63,23 @@ function ready(e) {
     document.getElementById("loading").innerHTML = loadings + "/" + IDs.length;
 }
 
-var done = false;
 function onPlayerStateChange(event) {
-    console.log(event.data)
+    if (event.data == -1) {
+        console.log("Unstarted");
+    } else if (event.data == YT.PlayerState.ENDED) {
+        console.log("Ended");
+    } else if (event.data == YT.PlayerState.PLAYING) {
+        console.log("Playing");
+    } else if (event.data == YT.PlayerState.PAUSED) {
+        console.log("Paused");
+    } else if (event.data == YT.PlayerState.BUFFERING) {
+        console.log("Buffering");
+    } else if (event.data == YT.PlayerState.CUED) {
+        console.log("Cued");
+    } else {
+        console.log("Invalid event = ", event.data);
+    }
+    
     if (loadings < IDs.length) {
         if (event.data == change) {
             loadings += 1;
@@ -71,8 +88,9 @@ function onPlayerStateChange(event) {
             document.getElementById("loading").innerHTML = loadings + "/" + IDs.length;
             if (loadings == IDs.length) loaded();
         }
-    }
-    if (event.data == YT.PlayerState.ENDED) {
+    } else if (event.data == YT.PlayerState.Playing) {
+        pause()
+    } else if (event.data == YT.PlayerState.ENDED) {
         play(IDs[(IDs.indexOf(playing) + 1)%IDs.length]);
     }
 }
@@ -86,40 +104,54 @@ function clear() {
     playing = "NONE";
 }
 
+function play() {
+    var id = "youtube-button" + playing;
+    var element = document.getElementById(id);
+    element.className = "row g-0 border border-success rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
+    players[playing].playVideo();
+}
+
+function pause(){
+    var id = "youtube-button" + playing;
+    var element = document.getElementById(id);
+    element.className = "row g-0 border border-warning rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
+    players[playing].pauseVideo();
+}
+
 function toggle() {
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     if (element.className.includes("border-warning")) {
-        element.className = "row g-0 border border-success rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
-        players[playing].playVideo();
+        play();
     } else {
-        element.className = "row g-0 border border-warning rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
-        players[playing].pauseVideo();
+        pause();
     }
 }
 
-function play(videoId) {
+function load(videoId) {
     if (videoId == playing) {
         toggle();
         return null;
     }
     clear();
-    var id = "youtube-button" + videoId;
-    var element = document.getElementById(id);
-    element.className = "row g-0 border border-success rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
-    players[videoId].seekTo(0);
-    players[videoId].playVideo();
     playing = videoId;
+    players[videoId].seekTo(0);
+    play();
 }
+
 function loaded() {
     var l = document.getElementById("loading");
     document.getElementById("pre").removeChild(l);
+    document.getElementById("after").className = "container-fluid";
+    document.body.className = "bg-dark";
 }
 
 function loading() {
     console.log("changing screen");
     var l = document.createElement("div");
-    l.className = "bg-dark text-center text-white fw-bold loading position-fixed";
+    document.getElementById("after").className = "invisible overflow-hidden";
+    document.body.className = "bg-dark overflow-hidden"
+    l.className = "bg-dark text-center text-white fw-bold position-fixed";
     l.id = "loading";
     l.innerHTML = "Loading...";
     l.style = "width: 100vh;height: 100vh";

@@ -30,10 +30,18 @@ def multYoutubeSearch(queries, total):
             i.join()
     return responses
 
-def querySearch(query, maxresults=10):
-    results = json.loads(YoutubeSearch(query, max_results=maxresults).to_json())
+def querySearch(query, maxresults=15):
+    results = json.loads(YoutubeSearch(query + " song", max_results=maxresults).to_json())
     songs = []
     for video in results['videos']:
+        splits = str(video['duration']).split(':')
+        if len(splits) > 2:
+            if len(splits) > 3:
+                continue
+            duration = (int(splits[0])*3600) + (int(splits[1])*60) + (int(splits[2]))
+            if duration > 6300:
+                continue
+    
         song = {
             "youtube-id": video['id'],
             'thumbnail': video['thumbnails'][0],
