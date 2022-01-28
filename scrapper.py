@@ -31,7 +31,7 @@ def multYoutubeSearch(queries, total):
     return responses
 
 def querySearch(query, maxresults=15):
-    results = json.loads(YoutubeSearch(query + " song", max_results=maxresults).to_json())
+    results = json.loads(YoutubeSearch(str(query) + " song", max_results=maxresults).to_json())
     songs = []
     for video in results['videos']:
         splits = str(video['duration']).split(':')
@@ -46,7 +46,7 @@ def querySearch(query, maxresults=15):
             "youtube-id": video['id'],
             'thumbnail': video['thumbnails'][0],
             'name': video['title'],
-            'duration': video['duration'],
+            'duration': 'NA',
             'views': video['views'],
             'artists': "NA",
             "album": "NA"
@@ -76,7 +76,7 @@ def youtubePlaylist(playlistID):
             "thumbnail": song['thumbnails'][-1]['url'],
             "query": song['accessibility']['title'],
             "youtube-id": song['id'],
-            "duration": song['duration']
+            "duration": 'NA'
         }
         playlist["songs"].append(curr)
     playlist["complete-load"] = True
@@ -152,7 +152,7 @@ def youtubeLink(q):
         "youtube-id": video['id'],
         'thumbnail': video['thumbnails'][0],
         'name': video['title'],
-        'duration': video['duration'],
+        'duration': 'NA',
         'views': video['views'],
         'artists': "NA"
     }

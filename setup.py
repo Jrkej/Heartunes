@@ -26,7 +26,7 @@ def search(query):
 def link(site, vid):
     if site == "youtube":
         response = youtubeLink(vid)
-        return render_template("solo.html", link="https://www.youtube.com/watch?v=" + response['youtube-id'], title=response['name'], caption="Artists - " + response['artists'], caption2=response['views'], thumbnail=response['thumbnail'], vid=response['youtube-id'])
+        return render_template("solo.html", song = response)
     else:
         return "Invalid site link - <a href='/home'>Home.</a>"
 

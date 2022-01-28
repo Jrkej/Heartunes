@@ -16,6 +16,7 @@
 
     <!--CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 <!--SVGs-->
@@ -74,9 +75,9 @@
     </symbol>
 </svg>
 
-<body class="bg-dark">
+<body class="bg-dark overflow-hidden">
     <div id="pre"></div>
-    <div class="container-fluid" id="after">
+    <div class="invisible overflow-hidden" id="after">
         <div class="row">
             <!--Sidebar-->
             <nav id="sidebarMenu" style="height: 100vh;" class="position-fixed col-md-3 col-lg-3 d-md-block bg-dark sidebar collapse">
@@ -128,7 +129,7 @@
             </nav>
 
             <!-- Main -->
-            <main class="col-md-8 ms-sm-auto col-lg-9 bg-dark text-white">
+            <main class="col-md-8 ms-sm-auto col-lg-9 bg-dark text-white" id="songs">
                 <div class="col-md-13">
                     <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                       <div class="col p-4 d-flex flex-column position-static">
@@ -154,9 +155,9 @@
                       <div role="button" onclick="load(`{{song['youtube-id']}}`)" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                         <div class="col p-4 d-flex flex-column position-static">
                           <strong class="d-inline-block mb-2 text-primary">Heartunes</strong>
-                          <h3 class="mb-0">{{song['name']}}</h3>
+                          <h3 class="mb-0" id="name-{{song['youtube-id']}}">{{song['name']}}</h3>
                           <div class="mb-1 text-muted">Artists : {{song['artists']}}</div>
-                          <p class="card-text mb-auto">
+                          <p class="card-text mb-auto" id="info-{{song['youtube-id']}}">
                               Duration : {{song['duration']}}
                               &nbsp;&nbsp;&nbsp;&nbsp;
                               {{song['views']}}
@@ -166,7 +167,7 @@
                           <a href="https://www.youtube.com/watch?v={{song['youtube-id']}}" target="#">Video link</a>
                         </div>
                         <div class="col-auto d-none d-lg-block">
-                            <img src="{{song['thumbnail']}}" alt="{{song['name']}}" width="250" height="260">
+                            <img src="{{song['thumbnail']}}" id="img-{{song['youtube-id']}}" alt="{{song['name']}}" width="250" height="260">
                         </div>
                       </div>
                     </div>
@@ -176,7 +177,66 @@
         </div>
     </div>
 
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-danger invisible" id="player-bottom">
+        <div class="container-fluid">
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav">
+
+                    <li class="nav-item">
+                        <img id="playing-img" src="../../static/images/logo.png" width="50px" height="50px">
+                    </li>
+                    
+                    <li class="nav-item" style="width: 27vw;">
+                        <p class="text-white fw-bold" id="playing-name">Heartunes</p>
+                    </li>
+
+                    <li class="nav-item">
+                        <i onclick="next(-1)" id="prev" role="button" class="fa fa-backward fa-lg" style="color: rgb(25, 46, 231);"></i>
+                    </li>
+                    
+                    <li class="nav-item" style="padding-left: 1vw;">
+                        <i onclick="toggle()" role="button" class="fa fa-play fa-2x" id="toggler" style="color: oldlace;"></i>
+                    </li>
+                    
+                    <li class="nav-item" style="padding-left: 1vw;">
+                        <div id="current-time">00:00</div>
+                    </li>
+                    
+                    <li class="nav-item" style="padding-left: 1vw;">
+                        <input type="range" min="1" max="200" style="width: 20vw;" id="duration" value="0" onchange="seekTo()">
+                    </li>
+                    
+                    <li class="nav-item" style="padding-left: 1vw;">
+                        <div id="total-time">00:00</div>
+                    </li>
+                
+                    <li class="nav-item" style="padding-left: 1vw;">
+                        <i onclick="next(1)" id="next" role="button" class="fa fa-forward fa-lg" style="color: rgb(25, 46, 231);;"></i>
+                    </li>                
+                
+                    <li class="nav-item" style="padding-left: 20vw;">
+                        <i class="fa fa-volume-down"></i>
+                    </li>
+
+                    <li class="nav-item">
+                        <input type="range" min="0" max="100" style="width: 10vw;" id="volume" value="63" onchange="seekVolume()">
+                    </li>
+
+                    <li class="nav-item">
+                        <i class="fa fa-volume-up"></i>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+      
+
 </body>
+
+<!--CSS-->
+<script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
 <!--JS-->
 <script src="../../static/js/audio.js"></script>

@@ -13,6 +13,8 @@ var vids = 0;
 var IDs = [];
 var change = 0;
 var pre = 0;
+var playDur = -1;
+var timer;
 
 function onYouTubeIframeAPIReady() {
     console.log("Loading songs");
@@ -63,6 +65,26 @@ function ready(e) {
     document.getElementById("loading").innerHTML = loadings + "/" + IDs.length;
 }
 
+function prettyDur(s) {
+    var mins = Math.floor(s/60);
+    var hours = Math.floor(mins/60);
+    var sec = Math.floor(s%60);
+    mins %= 60;
+    var dur = "";
+    if (hours > 0) dur = hours + ":"
+    if (hours > 0 || mins > 0) {
+        if (hours > 0 && mins < 10) dur = dur + "0" + mins + ":"
+        else dur = mins + ":"
+    }
+    if (sec < 10) {
+        dur += "0"
+    }
+    dur += sec
+    if (s < 60) dur = "0:" + dur
+
+    return dur
+}
+
 function onPlayerStateChange(event) {
     if (event.data == -1) {
         console.log("Unstarted");
@@ -88,10 +110,13 @@ function onPlayerStateChange(event) {
             document.getElementById("loading").innerHTML = loadings + "/" + IDs.length;
             if (loadings == IDs.length) loaded();
         }
-    } else if (event.data == YT.PlayerState.Playing) {
-        pause()
+    } else if (event.data == YT.PlayerState.PLAYING && event.target.m.id == playing) {
+        play();
+    } else if (event.data == YT.PlayerState.PAUSED && event.target.m.id == playing) {
+        pause();
     } else if (event.data == YT.PlayerState.ENDED) {
-        play(IDs[(IDs.indexOf(playing) + 1)%IDs.length]);
+        console.log("starting next");
+        next(1);
     }
 }
 
@@ -100,25 +125,74 @@ function clear() {
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     element.className = "row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
-    players[playing].pauseVideo();
+    playDur = -1;
+    clearInterval(timer);
+    document.getElementById("duration").value = 0;
+    document.getElementById("current-time").innerHTML = "00:00";
+
     playing = "NONE";
 }
 
+function seekTo() {
+    if (playDur == -1 || playing == "NONE") return null;
+
+    var slider = document.getElementById("duration")
+    var value = Math.floor(playDur/slider.max * slider.value)
+    players[playing].seekTo(value);
+}
+
+function seekVolume() {
+    if (playing == "NONE") return null;
+    players[playing].setVolume(document.getElementById("volume").value);
+}
+
+
 function play() {
+    if (playing == "NONE") return null;
+    
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     element.className = "row g-0 border border-success rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
+    document.getElementById("toggler").className = "fa fa-pause fa-lg";
     players[playing].playVideo();
+    seekVolume()
+}
+
+function seekTimer() {
+    var slider = document.getElementById("duration");
+    if (playDur == -1 || playing == "NONE") {
+        slider.value = 0;
+        return null;
+    }
+
+    var c = players[playing].getCurrentTime();
+    slider.value = Math.floor(slider.max * c/playDur);
+    document.getElementById("current-time").innerHTML = prettyDur(c);
 }
 
 function pause(){
+    if (playing == "NONE") return null;
+
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     element.className = "row g-0 border border-warning rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
+    document.getElementById("toggler").className = "fa fa-play fa-lg";
     players[playing].pauseVideo();
 }
 
+function next(add) {
+    if (playing == "NONE") return null;
+    document.getElementById("prev").className = "fa fa-backward fa-lg disabled";
+    document.getElementById("next").className = "fa fa-forward fa-lg disabled";
+    var ID = IDs[(IDs.indexOf(playing) + add + IDs.length)%IDs.length];
+    load(ID);
+    document.getElementById("prev").className = "fa fa-backward fa-lg";
+    document.getElementById("next").className = "fa fa-forward fa-lg";
+}
+
 function toggle() {
+    if (playing == "NONE") return null;
+
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     if (element.className.includes("border-warning")) {
@@ -133,24 +207,53 @@ function load(videoId) {
         toggle();
         return null;
     }
+    var prev = playing;
     clear();
     playing = videoId;
-    players[videoId].seekTo(0);
+    if (prev != "NONE") players[prev].pauseVideo();
+    playDur = players[playing].getDuration();
+    players[playing].seekTo(0);
+
+    document.getElementById("playing-img").src = document.getElementById("img-" + playing).src
+    document.getElementById("playing-name").innerHTML = document.getElementById("name-" + playing).innerHTML
+    document.getElementById("total-time").innerHTML = prettyDur(playDur);
+    document.getElementById("current-time").innerHTML = "00:00";
+
+    timer = setInterval(seekTimer, 1000);
+    
     play();
 }
 
 function loaded() {
+    var rems = []
+    for (var i  = 0; i < IDs.length; i++) {
+        var info = document.getElementById("info-" + IDs[i]);
+        var dur = players[IDs[i]].getDuration();
+        if (dur == 0) {
+            rems.push(IDs[i]);
+            document.getElementById("songs").removeChild(document.getElementById("youtube-audio"+IDs[i]))
+            continue;
+        }
+
+        if (info.innerHTML.includes("Duration : NA")) {
+            info.innerHTML = info.innerHTML.replace("Duration : NA", "Duration : " + prettyDur(dur))
+        }
+    }
+
+    IDs = IDs.filter(function(element){ 
+        return !rems.includes(element); 
+    });
+
     var l = document.getElementById("loading");
     document.getElementById("pre").removeChild(l);
     document.getElementById("after").className = "container-fluid";
+    document.getElementById("player-bottom").className = "navbar fixed-bottom navbar-expand-sm navbar-dark bg-danger";
     document.body.className = "bg-dark";
 }
 
 function loading() {
     console.log("changing screen");
     var l = document.createElement("div");
-    document.getElementById("after").className = "invisible overflow-hidden";
-    document.body.className = "bg-dark overflow-hidden"
     l.className = "bg-dark text-center text-white fw-bold position-fixed";
     l.id = "loading";
     l.innerHTML = "Loading...";
