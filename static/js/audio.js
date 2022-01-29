@@ -87,19 +87,19 @@ function prettyDur(s) {
 
 function onPlayerStateChange(event) {
     if (event.data == -1) {
-        console.log("Unstarted");
+        console.log("Unstarted", event.target.m.id);
     } else if (event.data == YT.PlayerState.ENDED) {
-        console.log("Ended");
+        console.log("Ended", event.target.m.id);
     } else if (event.data == YT.PlayerState.PLAYING) {
-        console.log("Playing");
+        console.log("Playing", event.target.m.id);
     } else if (event.data == YT.PlayerState.PAUSED) {
-        console.log("Paused");
+        console.log("Paused", event.target.m.id);
     } else if (event.data == YT.PlayerState.BUFFERING) {
-        console.log("Buffering");
+        console.log("Buffering", event.target.m.id);
     } else if (event.data == YT.PlayerState.CUED) {
-        console.log("Cued");
+        console.log("Cued", event.target.m.id);
     } else {
-        console.log("Invalid event = ", event.data);
+        console.log("Invalid event = ", event.data, event.target.m.id);
     }
     
     if (loadings < IDs.length) {

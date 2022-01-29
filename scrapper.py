@@ -55,7 +55,9 @@ def querySearch(query, maxresults=15):
     return songs
 
 def youtubePlaylist(playlistID):
-    meta = Playlist.getInfo("https://www.youtube.com/playlist?list=" + playlistID)
+    fetcher = Playlist(f'https://www.youtube.com/playlist?list={playlistID}')
+    
+    meta = fetcher.info['info']
     playlist = {
         "type": "playlist",
         "playlistType": "Youtube",
@@ -68,7 +70,9 @@ def youtubePlaylist(playlistID):
         "songs": [],
         "complete-load": False,
     }
-    for song in Playlist.getVideos(playlist["url"])['videos']:
+    while fetcher.hasMoreVideos:
+        fetcher.getNextVideos()
+    for song in fetcher.videos:
         curr = {
             "name": song['title'],
             "album": "NA",
@@ -79,6 +83,7 @@ def youtubePlaylist(playlistID):
             "duration": 'NA'
         }
         playlist["songs"].append(curr)
+
     playlist["complete-load"] = True
     playlist["error"] = None
 
