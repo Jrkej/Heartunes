@@ -157,7 +157,7 @@ def youtubeLink(q):
 
     song = {
         "youtube-id": video['id'],
-        'thumbnail': video['thumbnails'][-1],
+        'thumbnail': video['thumbnails'][-1]['url'],
         'name': video['title'],
         'duration': 'NA',
         'views': views,
