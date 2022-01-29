@@ -133,29 +133,43 @@
                 <div class="row mb-2 song" id="youtube-audio{{song['youtube-id']}}">
                     <div id={{song['youtube-id']}}></div>
                     <div class="col-md-13">
-                      <div role="button" onclick="load(`{{song['youtube-id']}}`)" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
-                          <img src="{{song['thumbnail']}}" id="img-{{song['youtube-id']}}" alt="{{song['name']}}" style="height: 60vh;">
-                          <strong class="d-inline-block mb-2 text-primary">Heartunes</strong>
-                          <h3 class="mb-0" id="name-{{song['youtube-id']}}">{{song['name']}}</h3>
-                          <div class="mb-1 text-muted">Artists : {{song['artists']}}</div>
-                          <p class="card-text mb-auto" id="info-{{song['youtube-id']}}">
-                              Duration : {{song['duration']}}
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                              {{song['views']}}
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                              Album : {{song['album']}}
-                          </p>
-                          <a href="https://www.youtube.com/watch?v={{song['youtube-id']}}" target="#">Video link</a>
+                        <div role="button" onclick="load(`{{song['youtube-id']}}`)" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static">
+                                <img src="{{song['thumbnail']}}" id="img-{{song['youtube-id']}}" alt="{{song['name']}}" style="height: 60vh;">
+                                <strong class="d-inline-block mb-2 text-primary">Heartunes</strong>
+                                <h3 class="mb-0" id="name-{{song['youtube-id']}}">{{song['name']}}</h3>
+                                <div class="mb-1 text-muted">Artists : {{song['artists']}}</div>
+                                <p class="card-text mb-auto" id="info-{{song['youtube-id']}}">
+                                    Duration : {{song['duration']}}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {{song['views']}}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    Album : {{song['album']}}
+                                </p>
+                                <p class="text-center">
+                                    <a href="https://www.youtube.com/watch?v={{song['youtube-id']}}" target="#">Video link</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button onclick="copy(`https://heartunes.herokuapp.com/link/youtube/{{song['youtube-id']}}`)" class="btn-primary">Copy link</button>
+                                </p>
+                            </div>
                         </div>
-                      </div>
                     </div>
                 </div>
             </main>
+            <footer class="text-muted text-center text-small">
+                <p class="text-muted">&copy; heartunes by Akshat Srivastava ❦</p>            
+                <ul class="list-inline">
+                    <li class="list-inline-item">Supports -</li>
+                    <li class="list-inline-item"><a href="https://open.spotify.com/" target="#">Spotify</a></li>
+                    <li class="list-inline-item"><a href="https://www.youtube.com/" target="#">Youtube</a></li>
+                </ul>
+                <p class="text-muted">FROM: 26/01/2021</p> 
+            </footer>
         </div>
     </div>
 
-    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-danger invisible" id="player-bottom">
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-danger invisible" style="height: 9vh;" id="player-bottom">
         <div class="container-fluid">
 
             <div class="collapse navbar-collapse" id="navbarCollapse">

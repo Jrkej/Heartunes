@@ -15,6 +15,7 @@ var change = 0;
 var pre = 0;
 var playDur = -1;
 var timer;
+var nameLength = 37;
 
 function onYouTubeIframeAPIReady() {
     console.log("Loading songs");
@@ -216,7 +217,8 @@ function load(videoId) {
     players[playing].seekTo(0);
 
     document.getElementById("playing-img").src = document.getElementById("img-" + playing).src
-    document.getElementById("playing-name").innerHTML = document.getElementById("name-" + playing).innerHTML
+    document.getElementById("playing-name").innerHTML = document.getElementById("name-" + playing).innerHTML.slice(0, Math.min(nameLength, document.getElementById("name-" + playing).innerHTML.length))
+    if (document.getElementById("name-" + playing).innerHTML.length > nameLength) document.getElementById("playing-name").innerHTML += "..."
     document.getElementById("total-time").innerHTML = prettyDur(playDur);
     document.getElementById("current-time").innerHTML = "00:00";
 
