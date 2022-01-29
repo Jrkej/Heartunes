@@ -1,6 +1,6 @@
 import json
 from youtube_search import YoutubeSearch
-from youtubesearchpython import Playlist
+from youtubesearchpython import Playlist, Video, ResultMode
 import requests
 import re
 import threading
@@ -144,16 +144,23 @@ def scrapePlaylist(url):
     return playlist
 
 def youtubeLink(q):
-    
-    results = json.loads(YoutubeSearch(q, max_results=1).to_json())
-    
-    video = results['videos'][0]
+    link = f"http://www.youtube.com/watch?v={q}"
+    video = Video.get(link, mode = ResultMode.json)
+    v = video['viewCount']['text']
+    v = v[::-1]
+    views = ""
+    for i in range(len(v)):
+        if i%3 == 0:
+            views += ","
+        views += v[i]
+    views = views[::-1] + " views"
+
     song = {
         "youtube-id": video['id'],
-        'thumbnail': video['thumbnails'][0],
+        'thumbnail': video['thumbnails'][-1],
         'name': video['title'],
         'duration': 'NA',
-        'views': video['views'],
+        'views': views,
         'artists': "NA"
     }
 
