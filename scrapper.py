@@ -4,6 +4,7 @@ from youtubesearchpython import Playlist, Video, ResultMode
 import requests
 import re
 import threading
+from bs4 import BeautifulSoup
 
 maxThreads = 50
 
@@ -172,7 +173,31 @@ def youtubeLink(q):
         'name': video['title'],
         'duration': 'NA',
         'views': views,
-        'artists': "NA"
+        'artists': "NA",
+        "album": "NA"
+    }
+
+    return song
+
+def spotifyLink(track):
+    html = requests.get(f"https://open.spotify.com/track/{track}").text
+    soup = BeautifulSoup(html , 'html.parser')
+    name = str(soup.find_all("meta", attrs={"property": "og:title"})[0]).replace("<meta content=", "")[1:].replace(' property="og:title"/>', "")[:-1]
+    url = str(soup.find_all("meta", attrs={"property": "og:image"})[0]).split('"')[1]
+    artists = ','.join(str(soup.find_all('title')[0]).split("song by ")[1].replace(" | Spotify</title>", "").split(", "))
+    query = name + " " + artists.replace(",", " ")
+    url2 = str(soup.find_all("meta", attrs={"property": "music:album"})[0]).split('"')[1]
+    html = requests.get(url2).text
+    soup = BeautifulSoup(html , 'html.parser')
+    album = str(soup.find_all("meta", attrs={"property": "og:title"})[0]).replace("<meta content=", "")[1:].replace(' property="og:title"/>', "")[:-1]
+    
+    song = {
+        "youtube-id": multYoutubeSearch([query], 1)[0],
+        "name": name,
+        "thumbnail": url,
+        "artists": artists,
+        "duration": "NA",
+        "album": album
     }
 
     return song

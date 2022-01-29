@@ -227,11 +227,13 @@ function load(videoId) {
     playDur = players[playing].getDuration();
     players[playing].seekTo(0);
 
+    var name = document.getElementById("name-" + playing).innerHTML.slice(0, Math.min(nameLength, document.getElementById("name-" + playing).innerHTML.length))
+    if (document.getElementById("name-" + playing).innerHTML.length > nameLength) name += "..."
     document.getElementById("playing-img").src = document.getElementById("img-" + playing).src
-    document.getElementById("playing-name").innerHTML = document.getElementById("name-" + playing).innerHTML.slice(0, Math.min(nameLength, document.getElementById("name-" + playing).innerHTML.length))
-    if (document.getElementById("name-" + playing).innerHTML.length > nameLength) document.getElementById("playing-name").innerHTML += "..."
+    document.getElementById("playing-name").innerHTML = name
     document.getElementById("total-time").innerHTML = prettyDur(playDur);
     document.getElementById("current-time").innerHTML = "00:00";
+    document.title = "Heartunes · " + name
 
     timer = setInterval(seekTimer, 1000);
     

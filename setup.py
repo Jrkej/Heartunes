@@ -27,6 +27,9 @@ def link(site, vid):
     if site == "youtube":
         response = youtubeLink(vid)
         return render_template("solo.html", song = response)
+    elif site == "spotify":
+        response = spotifyLink(vid)
+        return render_template("solo.html", song = response)
     else:
         return "Invalid site link - <a href='/home'>Home.</a>"
 
@@ -57,6 +60,8 @@ def home():
             
             if "youtube" in query or "youtu.be" in query:
                 return redirect(f"/link/youtube/{query[-11:]}")
+            elif "spotify" in query and "track" in query:
+                return redirect(f"/link/spotify/{query.split('track/')[1].split('?')[0]}")
 
             return "Song URL not supported - <a href='/home'>Home.</a>"
 
