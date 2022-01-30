@@ -150,7 +150,7 @@
                 <hr class="bg-danger">
 
                 {%for song in meta['songs']%}
-                <div id={{song['youtube-id']}}></div>
+                <div id={{song['youtube-id']}} class="position-absolute"></div>
                 <div class="row mb-2 song" id="youtube-audio{{song['youtube-id']}}">
                     <div class="col-md-13">
                         <div role="button" onclick="load(`{{song['youtube-id']}}`)" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
