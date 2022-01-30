@@ -94,20 +94,21 @@ function debuger() {
 }
 
 function onPlayerStateChange(event) {
+    var vid = event.target.playerInfo.videoData.video_id;
     if (event.data == -1) {
-        console.log("Unstarted", event.target.h.id);
+        console.log("Unstarted", vid);
     } else if (event.data == YT.PlayerState.ENDED) {
-        console.log("Ended", event.target.h.id);
+        console.log("Ended", vid);
     } else if (event.data == YT.PlayerState.PLAYING) {
-        console.log("Playing", event.target.h.id);
+        console.log("Playing", vid);
     } else if (event.data == YT.PlayerState.PAUSED) {
-        console.log("Paused", event.target.h.id);
+        console.log("Paused", vid);
     } else if (event.data == YT.PlayerState.BUFFERING) {
-        console.log("Buffering", event.target.h.id);
+        console.log("Buffering", vid);
     } else if (event.data == YT.PlayerState.CUED) {
-        console.log("Cued", event.target.h.id);
+        console.log("Cued", vid);
     } else {
-        console.log("Invalid event = ", event.data, event.target.h.id);
+        console.log("Invalid event = ", event.data, vid);
     }
     if (IDloadings.length < IDs.length) {
         if (event.data == change) {
@@ -116,12 +117,10 @@ function onPlayerStateChange(event) {
             event.target.setVolume(100);
             document.getElementById("loading").innerHTML = IDloadings.length + "/" + IDs.length;
             if (IDloadings.length == IDs.length) loaded();
-        } else {
-            console.log(change, event)
         }
-    } else if (event.data == YT.PlayerState.PLAYING && event.target.h.id == playing) {
+    } else if (event.data == YT.PlayerState.PLAYING && vid == playing) {
         play();
-    } else if (event.data == YT.PlayerState.PAUSED && event.target.h.id == playing) {
+    } else if (event.data == YT.PlayerState.PAUSED && vid == playing) {
         pause();
     } else if (event.data == YT.PlayerState.ENDED) {
         console.log("starting next");
