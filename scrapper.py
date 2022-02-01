@@ -49,7 +49,7 @@ def querySpotSearch(query, maxresults=7):
             "artists": ','.join([artist['name'] for artist in song['artists']]),
             "duration": "NA",
         }
-        curr['youtube-id'] = fetchID(curr['name'] + " " + curr['artists'] + " " + curr['album'] + " song")
+        curr['youtube-id'] = fetchID(curr['name'] + " song " + curr['artists'] + " " + curr['album'])
         songs.append(curr)
 
     return songs
@@ -156,7 +156,7 @@ def spotifyPlaylist(playlistID):
                 "album": song['track']['album']['name'],
                 "artists": ','.join([artist['name'] for artist in song['track']['artists']]),
                 "thumbnail": song['track']['album']['images'][0]['url'],
-                "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]) + " " + song['track']['album']['name'],
+                "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]),
                 "duration": "NA",
             }
             queries.append(curr['query'])
