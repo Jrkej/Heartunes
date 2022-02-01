@@ -153,26 +153,28 @@
                 <div id={{song['youtube-id']}} class="position-absolute"></div>
                 <div class="row mb-2 song" id="youtube-audio{{song['youtube-id']}}">
                     <div class="col-md-13">
-                        <div role="button" onclick="load(`{{song['youtube-id']}}`)" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                            <div class="col p-4 d-flex flex-column position-static">
-                            <strong class="d-inline-block mb-2 text-primary">Heartunes</strong>
-                            <h3 class="mb-0" id="name-{{song['youtube-id']}}">{{song['name']}}</h3>
-                            <div class="mb-1 text-muted">Artists : {{song['artists']}}</div>
-                            <p class="card-text mb-auto" id="info-{{song['youtube-id']}}">
-                                Duration : {{song['duration']}}
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                {{song['views']}}
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                Album : {{song['album']}}
-                            </p>
-                            <p>
-                                <a href="https://www.youtube.com/watch?v={{song['youtube-id']}}" target="#">Video link</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <a href="/link/youtube/{{song['youtube-id']}}" target="#">Open in new tab</a>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <button onclick="copy(`https://heartunes.herokuapp.com/link/youtube/{{song['youtube-id']}}`)" class="btn-primary">Copy link</button>
-                                    
-                            </p>
+                        <div role="button" id="youtube-button{{song['youtube-id']}}" class="row g-0 border border-danger rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 pb-2 d-flex flex-column position-static">
+                                <div onclick="load(`{{song['youtube-id']}}`)"class="col pb-3 d-flex flex-column position-static">
+                                    <strong class="d-inline-block mb-2 text-primary">Heartunes</strong>
+                                    <h3 class="mb-0" id="name-{{song['youtube-id']}}">{{song['name']}}</h3>
+                                    <div class="mb-1 text-muted">Artists : {{song['artists']}}</div>
+                                    <p class="card-text mb-auto" id="info-{{song['youtube-id']}}">
+                                        Duration : {{song['duration']}}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {{song['views']}}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        Album : {{song['album']}}
+                                    </p>
+                                </div>
+                                <p>
+                                    <iframe style="width:100%;min-width:100px;max-width:200px;height:20px;border:0;overflow:hidden;" scrolling="no" src="//ybm.pw/button/mp3/{{song['youtube-id']}}"></iframe>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="/link/youtube/{{song['youtube-id']}}" target="#">Open in new tab</a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button onclick="copy(`https://heartunes.herokuapp.com/link/youtube/{{song['youtube-id']}}`)" class="btn-primary">Copy link</button>
+                                        
+                                </p>
                             </div>
                             <div class="col-auto d-none d-lg-block">
                                 <img src="{{song['thumbnail']}}" id="img-{{song['youtube-id']}}" alt="{{song['name']}}" width="250" height="260">
