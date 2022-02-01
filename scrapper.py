@@ -55,7 +55,7 @@ def querySpotSearch(query, maxresults=7):
     return songs
 
 def querySearch(query):
-    ytload = 8
+    ytload = 15
     spotload = 7
 
     results = json.loads(YoutubeSearch(str(query) + " song", max_results=ytload).to_json())
