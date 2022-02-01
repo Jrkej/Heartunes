@@ -164,11 +164,14 @@ def spotifyPlaylist(playlistID):
 
     responses = multYoutubeSearch(queries, playlist['tracks'])
     added = []
+    r = 0
     for i in range(playlist['tracks']):
-        if responses[i] in added:
-            playlist['songs'].pop(i)
+        x = i - r
+        if responses[x] in added:
+            playlist['songs'].pop(x)
+            r += 1
         else:
-            playlist['songs'][i]['youtube-id'] = responses[i]
+            playlist['songs'][x]['youtube-id'] = responses[i]
             added.append(responses[i])
 
     playlist["complete-load"] = True
