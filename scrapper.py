@@ -31,8 +31,34 @@ def multYoutubeSearch(queries, total):
             i.join()
     return responses
 
-def querySearch(query, maxresults=15):
-    results = json.loads(YoutubeSearch(str(query) + " song", max_results=maxresults).to_json())
+def querySpotSearch(query, maxresults=7):
+    token = requests.get('https://open.spotify.com/get_access_token?reason=transport&productType=web_player').json()['accessToken']
+    headers = {"authorization": "Bearer " + token}
+
+    search = requests.get(
+        'https://api.spotify.com/v1/search',
+        headers=headers,
+        params={ 'q': query, 'type': 'track' }).json()
+
+    songs = []
+    for song in search['tracks']['items'][:maxresults]:
+        curr =  {
+            "name": song['name'],
+            "album": song['album']['name'],
+            "thumbnail": song['album']['images'][1]['url'],
+            "artists": ','.join([artist['name'] for artist in song['artists']]),
+            "duration": "NA",
+        }
+        curr['youtube-id'] = fetchID(curr['name'] + " " + curr['artists'] + " " + curr['album'] + " song")
+        songs.append(curr)
+
+    return songs
+
+def querySearch(query):
+    ytload = 8
+    spotload = 7
+
+    results = json.loads(YoutubeSearch(str(query) + " song", max_results=ytload).to_json())
     songs = []
     for video in results['videos']:
         splits = str(video['duration']).split(':')
@@ -53,7 +79,19 @@ def querySearch(query, maxresults=15):
             "album": "NA"
         }
         songs.append(song)
-    return songs
+    
+    loaded = []
+    ret = []
+    spot = querySpotSearch(query, spotload)
+    for i in range(max(ytload, spotload)):
+        if i < ytload and songs[i]['youtube-id'] not in loaded:
+            ret.append(songs[i])
+            loaded.append(songs[i]['youtube-id'])
+        if i < spotload and spot[i]['youtube-id'] not in loaded:
+            ret.append(spot[i])
+            loaded.append(spot[i]['youtube-id'])
+
+    return ret
 
 def youtubePlaylist(playlistID):
     fetcher = Playlist(f'https://www.youtube.com/playlist?list={playlistID}')
@@ -118,7 +156,7 @@ def spotifyPlaylist(playlistID):
                 "album": song['track']['album']['name'],
                 "artists": ','.join([artist['name'] for artist in song['track']['artists']]),
                 "thumbnail": song['track']['album']['images'][0]['url'],
-                "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]),
+                "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]) + " " + song['track']['album']['name'],
                 "duration": "NA",
             }
             queries.append(curr['query'])
