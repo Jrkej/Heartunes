@@ -167,7 +167,7 @@ def spotifyPlaylist(playlistID):
     r = 0
     for i in range(playlist['tracks']):
         x = i - r
-        if responses[x] in added:
+        if responses[i] in added:
             playlist['songs'].pop(x)
             r += 1
         else:
