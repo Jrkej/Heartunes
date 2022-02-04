@@ -84,10 +84,10 @@ def querySearch(query):
     ret = []
     spot = querySpotSearch(query, spotload)
     for i in range(max(ytload, spotload)):
-        if i < ytload and songs[i]['youtube-id'] not in loaded:
+        if i < len(song) and songs[i]['youtube-id'] not in loaded:
             ret.append(songs[i])
             loaded.append(songs[i]['youtube-id'])
-        if i < spotload and spot[i]['youtube-id'] not in loaded:
+        if i < len(spot) and spot[i]['youtube-id'] not in loaded:
             ret.append(spot[i])
             loaded.append(spot[i]['youtube-id'])
 
