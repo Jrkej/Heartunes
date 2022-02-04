@@ -16,25 +16,22 @@ var pre = 0;
 var playDur = -1;
 var timer;
 var nameLength = 37;
+var thresh = 0;
+var oneTime = 20;
+var size = '0';
 
-function onYouTubeIframeAPIReady() {
-    console.log("Loading songs");
+function preloads() {
     var loaders = document.getElementsByClassName("song");
-    var size = '0';
-    change = YT.PlayerState.CUED;
-
-    if (document.location.href.includes("preload=1")) {
-        pre = 1;
-        change = YT.PlayerState.PLAYING;
-    }
-
-    if (document.location.href.includes("debug=1")) {
-        size = '100';
-    }
-
-    for (var i = 0; i < loaders.length; i++) {
+    for (var i = thresh; i < loaders.length; i++) {
         var videoId = loaders.item(i).id.replace("youtube-audio", "");
         IDs.push(videoId);
+    }
+    console.log("Total = ", IDs.length)
+}
+
+function part() {
+    for (var i = thresh; i < Math.min(IDs.length, thresh + oneTime); i++) {
+        var videoId = IDs[i]
         var player = new YT.Player(videoId, {
             height: size,
             width: size,
@@ -50,7 +47,24 @@ function onYouTubeIframeAPIReady() {
         });
         players[videoId] = player;
     }
-    console.log("Loading players", IDs.length);
+    console.log("Loading players", Math.min(IDs.length - thresh, oneTime));
+    thresh = Math.min(IDs.length, thresh + oneTime);
+}
+
+function onYouTubeIframeAPIReady() {
+    console.log("Loading songs");
+    change = YT.PlayerState.CUED;
+
+    if (document.location.href.includes("preload=1")) {
+        pre = 1;
+        change = YT.PlayerState.PLAYING;
+    }
+
+    if (document.location.href.includes("debug=1")) {
+        size = '100';
+    }
+    preloads()
+    part()
 }
 
 function ready(e) {
@@ -117,6 +131,7 @@ function onPlayerStateChange(event) {
             event.target.setVolume(100);
             document.getElementById("loading").innerHTML = IDloadings.length + "/" + IDs.length;
             if (IDloadings.length == IDs.length) loaded();
+            else if(IDloadings.length == thresh) part();
         }
     } else if (event.data == YT.PlayerState.PLAYING && vid == playing) {
         play();
@@ -158,12 +173,12 @@ function seekVolume() {
 function play() {
     if (playing == "NONE") return null;
     
+    players[playing].playVideo();
+    seekVolume()
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     element.className = "row g-0 border border-success rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
     document.getElementById("toggler").className = "fa fa-pause fa-lg";
-    players[playing].playVideo();
-    seekVolume()
 }
 
 function seekTimer() {
@@ -182,11 +197,11 @@ function seekTimer() {
 function pause(){
     if (playing == "NONE") return null;
 
+    players[playing].pauseVideo();
     var id = "youtube-button" + playing;
     var element = document.getElementById(id);
     element.className = "row g-0 border border-warning rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative";
     document.getElementById("toggler").className = "fa fa-play fa-lg";
-    players[playing].pauseVideo();
 }
 
 function next(add) {
