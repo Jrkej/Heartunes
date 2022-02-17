@@ -15,7 +15,7 @@ def search(query):
         "description": f"Song search : {query}",
         "playlistType": "Search",
         "owner": "Heartunes",
-        "thumbnail": "../static/images/logo.png",
+        "thumbnail": "https://heartunes.herokuapp.com/static/images/logo.png",
         "url": "https://www.youtube.com/results?search_query="+'+'.join(query.split()),
         "tracks": len(response),
         "songs": response,
