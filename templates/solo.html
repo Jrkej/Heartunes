@@ -14,14 +14,12 @@
 
     <meta property="og:title" content="{{song['name']}}">
     <meta property="og:description" content="Listen songs for free">
-    <meta property="og:image" content="{{song['thumbnail']}}"}
+    <meta property="og:image" content="{{song['thumbnail']}}"}>
     <meta property="og:site_name" content="Heartunes">
     <meta property="og:url" content="https://heartunes.herokuapp.com/link/{{song['type']}}/{{song['track']}}">
-    <meta property="og:video" content="https://www.youtube.com/watch?v={{song['youtube-id']}}">
-    <meta property="og:video:height" content="100">
-    <meta property="og:type" content="video">
-    <meta property="og:video:width" content="100" >
-    <meta property="og:video:type" content="application/x-shockwave-flash">
+    <meta property="og:audio" content="https://www.youtube.com/watch?v={{song['youtube-id']}}">
+    <meta property="og:audio:type" content="audio/vnd.facebook.bridge">
+    <meta property="og:type" content="music.song">
        
     <title>Heartunes -  {{song['name']}}</title>
 
