@@ -19,6 +19,7 @@ def search(query):
         "url": "https://www.youtube.com/results?search_query="+'+'.join(query.split()),
         "tracks": len(response),
         "songs": response,
+        "meta": "https://heartunes.herokuapp.com/search/" + query,
     }
     return render_template("list.html", meta=meta)
 
@@ -37,9 +38,11 @@ def link(site, vid):
 def playlist(site, pid):
     if site == "youtube":
         response = youtubePlaylist(pid)
+        response['meta'] = "https://heartunes.herokuapp.com/playlist/" + site + "/" + pid
         return render_template("list.html", meta=response)
     if site == "spotify":
         response = spotifyPlaylist(pid)
+        response['meta'] = "https://heartunes.herokuapp.com/playlist/" + site + "/" + pid
         return render_template("list.html", meta=response)
     else:
         return "Invalid site link - <a href='/home'>Home.</a>"
@@ -66,6 +69,10 @@ def home():
             return "Song URL not supported - <a href='/home'>Home.</a>"
 
         return redirect(f"/search/{query}")
+
+@app.errorhandler(404)
+def not_found(link):
+    return "Ummmm, Looks like a bad url take a raft to <a href='/home'>Home.</a>"
 
 if __name__ == "__main__":
     app.run(debug=True)
