@@ -215,7 +215,9 @@ def youtubeLink(q):
         'duration': 'NA',
         'views': views,
         'artists': "NA",
-        "album": "NA"
+        "album": "NA",
+        "type": "youtube",
+        "track": video['id']
     }
 
     return song
@@ -238,7 +240,9 @@ def spotifyLink(track):
         "thumbnail": url,
         "artists": artists,
         "duration": "NA",
-        "album": album
+        "album": album,
+        "type": "spotify",
+        "track": track,
     }
 
     return song
