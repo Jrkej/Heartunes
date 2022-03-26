@@ -70,6 +70,11 @@ def home():
 
         return redirect(f"/search/{query}")
 
+@app.route("/ping", methods=["GET","POST"])
+def ping():
+    print(request.cookies)
+    return str(request.cookies)
+
 @app.errorhandler(404)
 def not_found(link):
     return "Ummmm, Looks like a bad url take a raft to <a href='/home'>Home.</a>"
