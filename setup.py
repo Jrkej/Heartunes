@@ -72,7 +72,7 @@ def home():
 
 @app.route("/ping", methods=["GET","POST"])
 def ping():
-    print(str.cookies)
+    print(request.cookies)
     return str(request.cookies)
 
 @app.errorhandler(404)
