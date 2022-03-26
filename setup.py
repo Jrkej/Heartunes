@@ -72,7 +72,8 @@ def home():
 
 @app.route("/ping", methods=["GET","POST"])
 def ping():
-    return str(request.form)
+    print(str.cookies)
+    return str(request.cookies)
 
 @app.errorhandler(404)
 def not_found(link):
