@@ -72,10 +72,6 @@ def home():
 
 @app.route("/ping", methods=["GET","POST"])
 def ping():
-    print(requests.post("https://wsc-2022-web-2-bvel4oasra-uc.a.run.app/visit", "url=https%3A%2F%2Fwsc-2022-web-2-bvel4oasra-uc.a.run.app%2Fpersonalize%3Fimage%3Dhttps%253A%252F%252Fheartunes.herokuapp.com%252Fping").text)
-    print(requests.post("https://wsc-2022-web-2-bvel4oasra-uc.a.run.app/visit", "url=https%253A%252F%252Fheartunes.herokuapp.com%252Fping").text)
-    
-    print(request.cookies)
     return str(request.form)
 
 @app.errorhandler(404)
