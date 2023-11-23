@@ -151,16 +151,20 @@ def spotifyPlaylist(playlistID):
         songs = requests.get(url2, headers=headers).json()
         url2 = songs['next']
         for song in songs['items']:
-            curr = {
-                "name": song['track']['name'],
-                "album": song['track']['album']['name'],
-                "artists": ','.join([artist['name'] for artist in song['track']['artists']]),
-                "thumbnail": song['track']['album']['images'][0]['url'],
-                "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]),
-                "duration": "NA",
-            }
-            queries.append(curr['query'])
-            playlist['songs'].append(curr)
+            try:
+                curr = {
+                    "name": song['track']['name'],
+                    "album": song['track']['album']['name'],
+                    "artists": ','.join([artist['name'] for artist in song['track']['artists']]),
+                    "thumbnail": song['track']['album']['images'][0]['url'],
+                    "query": song['track']['name'] + " " + ' '.join([artist['name'] for artist in song['track']['artists']]),
+                    "duration": "NA",
+                }
+                queries.append(curr['query'])
+                playlist['songs'].append(curr)
+            except:
+                playlist['tracks'] -= 1
+                #SONG DELETED FROM SPOTIFY
 
     responses = multYoutubeSearch(queries, playlist['tracks'])
     added = []
@@ -227,9 +231,9 @@ def spotifyLink(track):
     soup = BeautifulSoup(html , 'html.parser')
     name = str(soup.find_all("meta", attrs={"property": "og:title"})[0]).replace("<meta content=", "")[1:].replace(' property="og:title"/>', "")[:-1]
     url = str(soup.find_all("meta", attrs={"property": "og:image"})[0]).split('"')[1]
-    artists = ','.join(str(soup.find_all('title')[0]).split("song by ")[1].replace(" | Spotify</title>", "").split(", "))
+    artists = ','.join(str(soup.find_all('title')[0]).split("by ")[1].replace(" | Spotify</title>", "").split(", "))
     query = name + " " + artists.replace(",", " ")
-    url2 = str(soup.find_all("meta", attrs={"property": "music:album"})[0]).split('"')[1]
+    url2 = str(soup.find_all("meta", attrs={"name": "music:album"})[0]).split('"')[1]
     html = requests.get(url2).text
     soup = BeautifulSoup(html , 'html.parser')
     album = str(soup.find_all("meta", attrs={"property": "og:title"})[0]).replace("<meta content=", "")[1:].replace(' property="og:title"/>', "")[:-1]
@@ -248,5 +252,13 @@ def spotifyLink(track):
     return song
 
 if __name__ == "__main__":
+    youtubeLink("Uvj827SqHak")
+    print("Test 1 done")
+    spotifyLink("6uQkoo1UGWThtEpNEYc6Ga")
+    print("Test 2 done")
     youtubePlaylist("PLrtx_ZprDtppkvHunsLeRSJT4t0cUTPTk")
+    print("Test 3 done")
+    spotifyPlaylist("3etBVbyq64Paw9OfL9QI9y")
+    print("Test 4 done")
+    
     print("#Code by jrke")
