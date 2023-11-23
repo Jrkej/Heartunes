@@ -198,7 +198,7 @@ def scrapePlaylist(url):
 
 def youtubeLink(q):
     link = f"http://www.youtube.com/watch?v={q}"
-    video = Video.get(link, mode = ResultMode.json)
+    video = Video.getInfo(link, mode = ResultMode.json)
     v = video['viewCount']['text']
     v = v[::-1]
     views = ""

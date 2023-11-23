@@ -3,6 +3,9 @@ from scrapper import *
 
 app = Flask(__name__)
 
+baseURL = "https://heartunes.vercel.app/"
+globe = {"baseURL":baseURL}
+
 @app.route("/")
 def root():
     return redirect(url_for("home"))
@@ -15,22 +18,22 @@ def search(query):
         "description": f"Song search : {query}",
         "playlistType": "Search",
         "owner": "Heartunes",
-        "thumbnail": "https://heartunes.herokuapp.com/static/images/logo.png",
+        "thumbnail": baseURL + "static/images/logo.png",
         "url": "https://www.youtube.com/results?search_query="+'+'.join(query.split()),
         "tracks": len(response),
         "songs": response,
-        "meta": "https://heartunes.herokuapp.com/search/" + query,
+        "meta": baseURL + "search/" + query,
     }
-    return render_template("list.html", meta=meta)
+    return render_template("list.html", meta=meta, globe=globe)
 
 @app.route("/link/<site>/<vid>")
 def link(site, vid):
     if site == "youtube":
         response = youtubeLink(vid)
-        return render_template("solo.html", song = response)
+        return render_template("solo.html", song = response, globe=globe)
     elif site == "spotify":
         response = spotifyLink(vid)
-        return render_template("solo.html", song = response)
+        return render_template("solo.html", song = response, globe=globe)
     else:
         return "Invalid site link - <a href='/home'>Home.</a>"
 
@@ -38,19 +41,19 @@ def link(site, vid):
 def playlist(site, pid):
     if site == "youtube":
         response = youtubePlaylist(pid)
-        response['meta'] = "https://heartunes.herokuapp.com/playlist/" + site + "/" + pid
-        return render_template("list.html", meta=response)
+        response['meta'] = baseURL + "playlist/" + site + "/" + pid
+        return render_template("list.html", meta=response, globe=globe)
     if site == "spotify":
         response = spotifyPlaylist(pid)
-        response['meta'] = "https://heartunes.herokuapp.com/playlist/" + site + "/" + pid
-        return render_template("list.html", meta=response)
+        response['meta'] = baseURL + "/playlist/" + site + "/" + pid
+        return render_template("list.html", meta=response, globe=globe)
     else:
         return "Invalid site link - <a href='/home'>Home.</a>"
 
 @app.route("/home", methods=["GET","POST"])
 def home():
     if request.method == "GET":
-        return render_template("index.html")
+        return render_template("index.html", globe=globe)
     else:
         query = request.form['query']
         if "https" in query:
