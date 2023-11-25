@@ -12,6 +12,7 @@ def root():
 
 @app.route("/search/<query>")
 def search(query):
+    query.replace('%20', '')
     response = querySearch(query)
     meta = {
         "name": query,
